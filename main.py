@@ -13,7 +13,7 @@ app = FastAPI()
 
 def connect_db():
     client = MongoClient(os.environ["MONGO_DB_KEY"])
-    db = client["UniAssist"]
+    db = client["synergy_db"]
     return db
 
 
@@ -27,7 +27,7 @@ class Article(BaseModel):
 # Save an article
 def save_article(article: Article):
     db = connect_db()  # Connect to the database
-    collection = db["articles"]  # Access the 'articles' collection
+    collection = db["synergy"]  # Access the 'articles' collection
     result = collection.insert_one(article.dict())  # Insert the article data
     return str(result.inserted_id)  # Return the ID of the inserted article
 
