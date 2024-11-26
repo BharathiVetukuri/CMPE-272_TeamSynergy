@@ -43,16 +43,17 @@ class RAGService:
 
     def _create_prompt(self):
         """Create the prompt template"""
-        template = """Use the following pieces of context to answer the question at the end. Please follow the following rules:
-            1. If you don't know the answer, don't try to make up an answer. Just say "I can't find the final answer but you may want to check the following links".
-            2. If you find the answer, write the answer in a concise way with few sentences maximum.
+        template = """Use the following pieces of context to answer the question at the end. Please follow these rules:
+        1. If the context doesn't contain enough information to answer the question directly, say "I don't have enough information to provide a complete answer, but here's what I found:" and then summarize the relevant details from the context.
+        2. If you find relevant information in the context, provide a concise answer using a few sentences at most. Be confident in your response if the information is clearly stated in the context.
+        3. Always include any specific examples or projects mentioned in the context that are relevant to the question.
+        4. If there are relevant links or sources mentioned in the context, include them at the end of your answer.
 
-            {context}
+        {context}
 
-            Question: {input}
+        Question: {input}
 
-            Helpful Answer:
-            """
+        Helpful Answer:"""
         return PromptTemplate(template=template, input_variables=["input", "context"])
 
     def load_vector_store(self):

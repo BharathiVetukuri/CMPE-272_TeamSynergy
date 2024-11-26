@@ -4,10 +4,13 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import WebBaseLoader
 import bs4
 from typing import List, Tuple
-from Vectorstore_manager import VectorStoreManager
-import asyncio
+
 from langchain.schema import Document
-from llm_service import RAGService
+from .Vectorstore_manager import VectorStoreManager
+# from Vectorstore_manager import VectorStoreManager
+from .llm_service import RAGService
+# from llm_service import RAGService
+import json
 
 import os
 os.environ["USER_AGENT"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
@@ -36,35 +39,37 @@ class WebDataLoader:
 
     def get_dummy_data(self) -> List[Document]:
         """Return dummy documents for testing"""
-        dummy_docs = [
-            Document(
-                page_content="""Artificial Intelligence (AI) is revolutionizing healthcare. 
-                Recent studies show that AI-powered diagnostic tools can detect diseases 
-                with 95% accuracy. Medical professionals are increasingly adopting these 
-                technologies to improve patient care and treatment outcomes. However, 
-                experts warn about the importance of maintaining human oversight in 
-                critical medical decisions.""",
-                metadata={'source': 'https://example.com/ai-healthcare-article'}
-            ),
-            Document(
-                page_content="""The global climate crisis demands immediate action. 
-                Scientists report that renewable energy adoption has increased by 40% 
-                in the past year. Solar and wind power installations are breaking records, 
-                while costs continue to decrease. Governments worldwide are setting 
-                ambitious targets for carbon neutrality by 2050.""",
-                metadata={'source': 'https://example.com/climate-article'}
-            ),
-            Document(
-                page_content="""Space exploration enters a new era with private companies 
-                leading the charge. SpaceX and Blue Origin are developing reusable rocket 
-                technology, significantly reducing launch costs. Plans for Mars colonization 
-                are becoming more concrete, with the first human missions planned for the 
-                2030s.""",
-                metadata={'source': 'https://example.com/space-article'}
-            )
-        ]
-        print("Using dummy data for testing")
-        return dummy_docs
+        try:
+            with open(r"D:\project\finallevelprojects\Uni_Assist\updated_data.json", 'r', encoding='utf-8') as file:
+                json_data = json.load(file)
+                
+            documents = []
+            for item in json_data:
+                # Only create Document if page_content is not empty
+                if item.get('page_content'):
+                    doc = Document(
+                        page_content=item['page_content'],
+                        metadata={
+                            'source': item['metadata'].get('source', 'unknown'),
+                            'title': item['metadata'].get('title', ''),
+                            'language': item['metadata'].get('language', 'en')
+                        }
+                    )
+                    documents.append(doc)
+            
+            if not documents:
+                raise ValueError("No valid documents found in JSON file")
+                
+            print(f"Successfully loaded {len(documents)} documents from JSON file")
+            return documents
+            
+        except Exception as e:
+            print(f"Error loading JSON data: {str(e)}")
+            # Return dummy document in case of error
+            return [Document(
+                page_content="Error loading data. This is a fallback document.",
+                metadata={'source': 'error_fallback'}
+            )]
 
 
 class DataChunkSplitter:
@@ -93,7 +98,7 @@ class DataChunkSplitter:
         sample_embedding = np.array(
             embeddings.embed_query(splitted_docs[0].page_content)
         )
-        print(f"Sample embedding of a document chunk: {sample_embedding}")
+        # print(f"Sample embedding of a document chunk: {sample_embedding}")
         print(f"Size of the embedding: {sample_embedding.shape}")
 
         return splitted_docs, sample_embedding
@@ -118,7 +123,7 @@ class EmbeddingManager:
 
 
 
-async def process_data(urls: List[str], save_path: str, status_placeholder=None):
+async def process_data(save_path: str):
     try:
         # Initialize components
         web_loader = WebDataLoader()
@@ -129,7 +134,7 @@ async def process_data(urls: List[str], save_path: str, status_placeholder=None)
         # Load data from URLs
         # data = web_loader.load_from_urls(urls, status_placeholder)
         data = web_loader.get_dummy_data()
-        print(f"Data loaded from URLs are: {data}")
+        # print(f"Data loaded from URLs are: {data}")
 
         # Get embeddings
         embeddings = embedding_manager.get_embeddings()
@@ -140,6 +145,8 @@ async def process_data(urls: List[str], save_path: str, status_placeholder=None)
             embeddings
         )
 
+        print("Data chunks are splitted")
+
         # Create and save vector store
         vector_store = vector_store_manager.create_vector_store(
             splitted_docs,
@@ -147,6 +154,7 @@ async def process_data(urls: List[str], save_path: str, status_placeholder=None)
         )
         if vector_store:
             vector_store_manager.save_vector_store(save_path)
+            print("Vector store created and saved successfully")
             return True
         return False
 
@@ -156,46 +164,53 @@ async def process_data(urls: List[str], save_path: str, status_placeholder=None)
 
 
 
-
-async def main():
-    # Step 1: Process and store embeddings
-    urls = ["https://www.axios.com/2024/11/26/ozempic-medicare-medicaid-weight-loss-drugs"]
-    save_path = "faiss_store"
+async def query_vector_store(save_path: str, queries: List[str]) -> List[dict]:
+    """
+    Load vector store and perform queries
     
-    # Process the data and create vector store
-    success = await process_data(urls, save_path)
-    if not success:
-        print("Failed to process and store embeddings")
-        return
+    Args:
+        save_path: Path to the saved vector store
+        queries: List of queries to process
+        
+    Returns:
+        List[dict]: List of query results
+    """
+    try:
+        # Initialize RAG service and load vector store
+        rag_service = RAGService(
+            vector_store_path=save_path,
+            embedding_model_name=MODEL_NAME
+        )
+        
+        if not rag_service.load_vector_store():
+            raise Exception("Failed to load vector store")
+        
+        print("Vector store loaded successfully")
+        
+        # Process queries and collect results
+        results = []
+        for query in queries:
+            print(f"\nProcessing query: {query}")
+            try:
+                result = await rag_service.get_answer(query)
+                results.append({
+                    "query": query,
+                    "success": True,
+                    "result": result
+                })
+            except Exception as e:
+                results.append({
+                    "query": query,
+                    "success": False,
+                    "error": str(e)
+                })
+                
+        return results
+    except Exception as e:
+        print(f"Error in query_vector_store: {str(e)}")
+        return []
 
-    # Step 2: Initialize RAG service and load vector store
-    rag_service = RAGService(
-        vector_store_path=save_path,
-        embedding_model_name=MODEL_NAME  # Pass the same model name to RAGService
-    )
-    if not rag_service.load_vector_store():
-        print("Failed to load vector store")
-        return
-    print("Vector store loaded successfully")
 
-    # Step 3: Test some queries
-    test_queries = [
-        "What are the main topics discussed in the articles?",
-        "What are the key findings about healthcare?",
-        "What are the recent developments mentioned?"
-    ]
-
-    # Process each query
-    for query in test_queries:
-        print(f"\nQuery: {query}")
-        try:
-            result = await rag_service.get_answer(query)
-            if "error" in result:
-                print(f"Error: {result['error']}")
-            else:
-                print(f"Answer: {result['answer']}")
-        except Exception as e:
-            print(f"Error processing query: {str(e)}")
-
-if __name__ == "__main__":
-    asyncio.run(main())
+# if __name__ == "__main__":
+#     import asyncio
+#     asyncio.run(process_data("faiss_store"))
