@@ -4,6 +4,9 @@ from pymongo import MongoClient
 from pydantic import BaseModel
 from typing import List
 import os
+from fastapi import HTTPException
+from typing import Optional
+from Services.Embedding_service import query_vector_store
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,49 +20,60 @@ def connect_db():
     return db
 
 
-class Article(BaseModel):
-    title: str
-    content: str
-    author: str
-    published_date: str
 
 
-# Save an article
-def save_article(article: Article):
-    db = connect_db()  # Connect to the database
-    collection = db["synergy"]  # Access the 'articles' collection
-    result = collection.insert_one(article.dict())  # Insert the article data
-    return str(result.inserted_id)  # Return the ID of the inserted article
 
+class QueryRequest(BaseModel):
+    queries: List[str]
 
-# Fetch articles
-def fetch_articles(query={}) -> List[Article]:
-    db = connect_db()  # Connect to the database
-    collection = db["articles"]  # Access the 'articles' collection
-    articles = collection.find(query)  # Fetch articles based on the query
-    return [
-        Article(**article) for article in articles
-    ]  # Return the fetched articles as a list of Article objects
+class QueryResponse(BaseModel):
+    query: str
+    success: bool
+    result: Optional[dict] = None
+    error: Optional[str] = None
 
+@app.post("/query/", response_model=List[QueryResponse])
+async def query_documents(request: QueryRequest):
+    """
+    Process queries against the vector store
+    
+    Args:
+        request: QueryRequest containing list of queries
+        
+    Returns:
+        List[QueryResponse]: Results for each query
+    """
+    try:
+        # Path to your vector store - you might want to make this configurable
+        save_path = "./Services/faiss_store"
+        
+        # Check if vector store exists
+        if not os.path.exists(save_path):
+            raise HTTPException(
+                status_code=404,
+                detail="Vector store not found. Please ensure documents are embedded first."
+            )
+        
+        # Process queries
+        results = await query_vector_store(save_path, request.queries)
+        
+        # Format results for API response
+        formatted_results = []
+        for result in results:
+            formatted_results.append(QueryResponse(
+                query=result["query"],
+                success=result["success"],
+                result=result.get("result"),
+                error=result.get("error")
+            ))
+        
+        return formatted_results
 
-# API endpoint to save a demo article
-@app.post("/articles/demo/")
-def create_demo_article():
-    demo_article = Article(
-        title="Demo Article",
-        content="This is a demo article content.",
-        author="Demo Author",
-        published_date="2023-10-01",
-    )
-    article_id = save_article(demo_article)  # Save the demo article
-    return {"article_id": article_id}  # Return the ID of the saved article
-
-
-# API endpoint to fetch all articles
-@app.get("/articles/", response_model=List[Article])
-def get_all_articles():
-    articles = fetch_articles()  # Fetch all articles
-    return articles  # Return the list of articles
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error processing query: {str(e)}"
+        )
 
 
 if __name__ == "__main__":
