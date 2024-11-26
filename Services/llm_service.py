@@ -2,18 +2,29 @@ from langchain_groq import ChatGroq
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
 from langchain.prompts import PromptTemplate
-from langchain.vectorstores import FAISS
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_huggingface import HuggingFaceEmbeddings
 from dotenv import load_dotenv
 import os
 
+
 class RAGService:
-    def __init__(self, vector_store_path="faiss_store"):
-        load_dotenv()
+    def __init__(
+        self,
+        vector_store_path: str,
+        embedding_model_name: str = "sentence-transformers/all-MiniLM-l6-v2"
+    ):
         self.vector_store_path = vector_store_path
+        self.embeddings = HuggingFaceEmbeddings(
+            model_name=embedding_model_name,
+            model_kwargs={"device": "cpu"},
+            encode_kwargs={"normalize_embeddings": False}
+        )
+        load_dotenv()
+      
         self.llm = self._initialize_llm()
         self.prompt = self._create_prompt()
-        self.embeddings = self._initialize_embeddings()
+        # self.embeddings = self._initialize_embeddings()
         self.vector_store = None
         self.retriever = None
         self.document_chain = None
