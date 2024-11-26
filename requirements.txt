@@ -1,3 +1,4 @@
 fastapi==0.115.5
 pymongo==4.10.1
-pip install python-dotenv
+python-dotenv
+langchain_groq
