@@ -2,3 +2,8 @@ fastapi==0.115.5
 pymongo==4.10.1
 python-dotenv
 langchain_groq
+langchain
+langchain-community
+beautifulsoup4==4.12.3
+sentence-transformers
+langchain-huggingface>=0.0.1
