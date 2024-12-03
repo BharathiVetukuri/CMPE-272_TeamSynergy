@@ -10,7 +10,7 @@
 
 ## Now test Api endpoints in FastApi
 
-`http://127.0.0.1:8000/query  `
+POST TYPE API Endpoint: `http://127.0.0.1:8000/query  `
 
 body: row/json
 `{
