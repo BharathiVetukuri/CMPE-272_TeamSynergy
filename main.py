@@ -13,7 +13,13 @@ load_dotenv()
 
 app = FastAPI()
 
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Allow requests from your local React app
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 def connect_db():
     client = MongoClient(os.environ["MONGO_DB_KEY"])
     db = client["synergy_db"]
