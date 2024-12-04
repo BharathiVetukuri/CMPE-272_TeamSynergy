@@ -8,7 +8,7 @@ from fastapi import HTTPException
 from typing import Optional
 from Services.Embedding_service import query_vector_store
 from dotenv import load_dotenv
-
+from fastapi.middleware.cors import CORSMiddleware
 load_dotenv()
 
 app = FastAPI()
