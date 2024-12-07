@@ -1,8 +1,8 @@
 .chatbot-container {
   width: 100%;
   max-width: 600px;
-  margin: 0 auto;
-  background: linear-gradient(145deg, #6a11cb, #2575fc);
+  margin: 25px auto; /* Add a top margin to push it below the navbar */
+  background: linear-gradient(145deg, #00008B, #2575fc);
   color: white;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
@@ -12,6 +12,9 @@
 .chat-header {
   text-align: center;
   padding: 15px 10px;
+  color: whitesmoke; /* Ensures the header text is white */
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .chat-window {
@@ -61,7 +64,7 @@
 }
 
 .chat-input-container button {
-  background: linear-gradient(145deg, #6a11cb, #2575fc);
+  background: linear-gradient(145deg, #00008B, #2575fc);
   color: white;
   border: none;
   padding: 10px 20px;

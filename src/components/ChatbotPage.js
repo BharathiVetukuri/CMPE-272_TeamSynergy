@@ -2,37 +2,35 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ChatbotPage.css";
 
-const ChatbotPage = () => {
+const ChatbotPage = ({ user }) => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // Fetch initial message from API
+    // Fetch initial message
     useEffect(() => {
-        const fetchInitialMessage = async () => {
-            try {
-                const response = await axios.get("https://py-fast-api-theshubh007s-projects.vercel.app/");
-                const message = response.data.message || "Welcome to InsightBot!";
-                setMessages([{ type: "bot", text: message }]);
-            } catch (error) {
-                console.error("Error fetching initial message:", error);
-                setMessages([{ type: "bot", text: "Unable to load the initial message. Please try again later." }]);
-            }
-        };
+        setMessages([{ type: "bot", text: `Welcome ${user.name}! How can I assist you today?` }]);
+    }, [user]);
 
-        fetchInitialMessage();
-    }, []);
-
-    // Function to handle user input
+    // Handle user input
     const handleUserMessage = async (userInput) => {
+        if (!userInput.trim()) return;
+
         // Add user message to chat
         setMessages((prevMessages) => [...prevMessages, { type: "user", text: userInput }]);
 
         try {
             setLoading(true);
-            const response = await axios.post("https://py-fast-api-theshubh007s-projects.vercel.app/query", {
-                query: userInput,
+
+            // Call the API
+            const response = await axios.post("http://127.0.0.1:8000/query/", {
+                queries: [userInput],
             });
-            const botResponse = response.data.message || "I'm sorry, I couldn't understand that.";
+
+            const botResponse =
+                response.data[0]?.result?.answer ||
+                "I'm sorry, I couldn't find an answer to your question.";
+
+            // Add bot response to chat
             setMessages((prevMessages) => [...prevMessages, { type: "bot", text: botResponse }]);
         } catch (error) {
             console.error("Error fetching bot response:", error);
@@ -49,7 +47,6 @@ const ChatbotPage = () => {
         <div className="chatbot-container">
             <div className="chat-header">
                 <h1>InsightBot</h1>
-                <p>How can I assist you today?</p>
             </div>
             <div className="chat-window">
                 {messages.map((message, index) => (
