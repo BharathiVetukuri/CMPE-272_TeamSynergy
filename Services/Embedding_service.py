@@ -1,15 +1,16 @@
 import numpy as np
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import WebBaseLoader
 import bs4
 from typing import List, Tuple
-
+from pinecone.grpc import PineconeGRPC as Pinecone
+from pinecone import ServerlessSpec
 from langchain.schema import Document
 from .Vectorstore_manager import VectorStoreManager
 # from Vectorstore_manager import VectorStoreManager
 from .llm_service import RAGService
 # from llm_service import RAGService
+from .DataChunkSpiltter_Service import DataChunkSplitter
 import json
 
 import os
@@ -72,145 +73,72 @@ class WebDataLoader:
             )]
 
 
-class DataChunkSplitter:
-    def __init__(
-        self,
-        chunk_size: int = 1000,
-        chunk_overlap: int = 150,
-        separators: List[str] = ["\n\n", "\n", ".", ","]
-    ):
-        self.text_splitter = RecursiveCharacterTextSplitter(
-            separators=separators,
-            chunk_size=chunk_size,
-            chunk_overlap=chunk_overlap
-        )
 
-    def split_data_chunks(
-        self,
-        data: List,
-        embeddings: HuggingFaceEmbeddings
-    ) -> Tuple[List, np.ndarray]:
-        """Split documents and create sample embedding"""
-        splitted_docs = self.text_splitter.split_documents(data)
-        print(f"Splitted chunks are: {splitted_docs}")
 
-        # Create sample embedding
-        sample_embedding = np.array(
-            embeddings.embed_query(splitted_docs[0].page_content)
-        )
-        # print(f"Sample embedding of a document chunk: {sample_embedding}")
-        print(f"Size of the embedding: {sample_embedding.shape}")
-
-        return splitted_docs, sample_embedding
-
-MODEL_NAME = "sentence-transformers/all-MiniLM-l6-v2"
-class EmbeddingManager:
-    def __init__(
-        self,
-        model_name: str = MODEL_NAME,
-        device: str = "cpu",
-        normalize_embeddings: bool = False
-    ):
-        self.embeddings = HuggingFaceEmbeddings(
-            model_name=model_name,
-            model_kwargs={"device": device},
-            encode_kwargs={"normalize_embeddings": normalize_embeddings}
-        )
+# MODEL_NAME = "sentence-transformers/all-MiniLM-l6-v2"
+# class EmbeddingManager:
+#     def __init__(
+#         self,
+#         # model_name: str = MODEL_NAME,
+#         device: str = "cpu",
+#         normalize_embeddings: bool = False
+#     ):
+#         self.embeddings = HuggingFaceEmbeddings(
+#             model_name=model_name,
+#             model_kwargs={"device": device},
+#             encode_kwargs={"normalize_embeddings": normalize_embeddings}
+#         )
     
-    def get_embeddings(self):
-        """Return the initialized embeddings object"""
-        return self.embeddings
+#     def get_embeddings(self):
+#         """Return the initialized embeddings object"""
+#         return self.embeddings
 
 
 
-async def process_data(save_path: str):
-    try:
-        # Initialize components
-        web_loader = WebDataLoader()
-        embedding_manager = EmbeddingManager()
-        chunk_splitter = DataChunkSplitter()
-        vector_store_manager = VectorStoreManager()
+# async def process_data():
+#     try:
+#         # Initialize components
+#         web_loader = WebDataLoader()
+#         # embedding_manager = EmbeddingManager()
+#         chunk_splitter = DataChunkSplitter()
+#         vector_store_manager = VectorStoreManager()
 
-        # Load data from URLs
-        # data = web_loader.load_from_urls(urls, status_placeholder)
-        data = web_loader.get_dummy_data()
-        # print(f"Data loaded from URLs are: {data}")
+#         # Load data from URLs
+#         # url = "https://www.sjsu.edu/"
+#         # data = web_loader.load_from_urls(url)
+#         data = web_loader.get_dummy_data()
+#         print(f"Data loaded from URLs are: {len(data)}")
 
-        # Get embeddings
-        embeddings = embedding_manager.get_embeddings()
+#          # Get embeddings
+#         # embeddings = embedding_manager.get_embeddings()
 
-        # Split data into chunks
-        splitted_docs, sample_embedding = chunk_splitter.split_data_chunks(
-            data,
-            embeddings
-        )
+#         # Split data into chunks
+#         splitted_docs, sample_embedding = chunk_splitter.split_data_chunks(
+#             data
+#         )
 
-        print("Data chunks are splitted")
+#         print("Data chunks are splitted")
 
-        # Create and save vector store
-        vector_store = vector_store_manager.create_vector_store(
-            splitted_docs,
-            embeddings
-        )
-        if vector_store:
-            vector_store_manager.save_vector_store(save_path)
-            print("Vector store created and saved successfully")
-            return True
-        return False
+#         # Create and save vector store
+#         vector_store = vector_store_manager.create_vector_store(
+#             splitted_docs,
+ 
+#         )
+#         if vector_store:
+#             print("Vector store created and data saved successfully")
+#         else:
+#             print("Failed to create vector store or save data")
+       
 
-    except Exception as e:
-        print(f"Error processing data: {str(e)}")
-        return False
-
+#     except Exception as e:
+#         print(f"Error processing data: {str(e)}")
+#         return False
 
 
-async def query_vector_store(save_path: str, queries: List[str]) -> List[dict]:
-    """
-    Load vector store and perform queries
-    
-    Args:
-        save_path: Path to the saved vector store
-        queries: List of queries to process
-        
-    Returns:
-        List[dict]: List of query results
-    """
-    try:
-        # Initialize RAG service and load vector store
-        rag_service = RAGService(
-            vector_store_path=save_path,
-            embedding_model_name=MODEL_NAME
-        )
-        
-        if not rag_service.load_vector_store():
-            raise Exception("Failed to load vector store")
-        
-        print("Vector store loaded successfully")
-        
-        # Process queries and collect results
-        results = []
-        for query in queries:
-            print(f"\nProcessing query: {query}")
-            try:
-                result = await rag_service.get_answer(query)
-                results.append({
-                    "query": query,
-                    "success": True,
-                    "result": result
-                })
-            except Exception as e:
-                results.append({
-                    "query": query,
-                    "success": False,
-                    "error": str(e)
-                })
-                
-        return results
-    except Exception as e:
-        print(f"Error in query_vector_store: {str(e)}")
-        return []
+
+
 
 
 # if __name__ == "__main__":
 #     import asyncio
-#     asyncio.run(process_data("faiss_store"))
+    # asyncio.run(process_data())

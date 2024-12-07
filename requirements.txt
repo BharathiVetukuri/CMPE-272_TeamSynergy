@@ -6,9 +6,7 @@ langchain_groq
 langchain
 langchain-community
 beautifulsoup4==4.12.3
-sentence-transformers
-langchain-huggingface>=0.0.1
-faiss-cpu
 pytest
 pytest-asyncio
 httpx
+pinecone[grpc]

@@ -6,7 +6,7 @@ from typing import List
 import os
 from fastapi import HTTPException
 from typing import Optional
-from Services.Embedding_service import query_vector_store
+from Services.QueryProcessingService import query_vector_store
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 load_dotenv()
@@ -27,7 +27,7 @@ def connect_db():
 
 
 
-
+#DataModel
 
 class QueryRequest(BaseModel):
     queries: List[str]
@@ -51,17 +51,17 @@ async def query_documents(request: QueryRequest):
     """
     try:
         # Path to your vector store - you might want to make this configurable
-        save_path = "./Services/faiss_store"
+        # save_path = "./Services/faiss_store"
         
         # Check if vector store exists
-        if not os.path.exists(save_path):
-            raise HTTPException(
-                status_code=404,
-                detail="Vector store not found. Please ensure documents are embedded first."
-            )
+        # if not os.path.exists(save_path):
+        #     raise HTTPException(
+        #         status_code=404,
+        #         detail="Vector store not found. Please ensure documents are embedded first."
+        #     )
         
         # Process queries
-        results = await query_vector_store(save_path, request.queries)
+        results = await query_vector_store( request.queries)
         
         # Format results for API response
         formatted_results = []
