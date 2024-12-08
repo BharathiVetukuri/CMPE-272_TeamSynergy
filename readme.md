@@ -1,7 +1,12 @@
 # InsightBot: NLP Powered AI ChatBot
-Dive deep into various machine learning tasks using the Pycaret library. Each notebook in this repository showcases a different machine learning problem and how it can be solved using Pycaret. 
 
-## Team
+## Overview
+
+**InsightBot** is an advanced AI-powered chatbot designed to enhance the student experience by providing real-time assistance with university-related inquiries. From academics to campus events and administrative services, InsightBot centralizes information and reduces response times, ensuring a seamless and personalized user experience.
+
+---
+
+## 🌟 Team : Synergy
 
 - **Soumya Bharathi Vetukuri**
 - **Rutuja Patil**
@@ -11,94 +16,90 @@ Dive deep into various machine learning tasks using the Pycaret library. Each no
 ### **Together, we aim to revolutionize the student experience through AI-driven solutions!**
 
 ---
+## 🎯 Objectives  
 
-## Objectives
-- Providing Instant Assistance: Offering real-time responses to student queries related to academics, campus resources, events, and administrative services.
-- Centralizing Information: Acting as a single point of contact for all university-related inquiries, eliminating the need to navigate multiple platforms or resources.
-- Improving Efficiency: Reducing response times for common student concerns, such as course schedules, fee payment processes, and exam details, thereby enhancing productivity.
-- Personalized Support: Utilizing AI to provide customized recommendations, such as suggesting campus events, academic resources, or career opportunities based on user input.
-- Enhancing Student Experience: Simplifying the resolution of common challenges faced by students and improving their overall satisfaction with university services.
+### What InsightBot Brings to the Table:  
+- 🌟 **Instant Assistance**: Real-time responses to queries about academics, campus events, fees, and more.  
+- 📚 **Centralized Information**: A one-stop solution for all university-related inquiries, no more navigating multiple platforms.  
+- ⏱️ **Improved Efficiency**: Simplified processes for scheduling, payments, and exam-related queries.  
+- 🎯 **Personalized Support**: AI-powered recommendations for resources, events, and opportunities tailored just for you.  
+- 🎉 **Enhanced Experience**: Focus on learning and living while InsightBot takes care of the rest!  
 
+---
 
+## ✨ Key Features  
 
-## Key Features
-
-- **Real-Time Assistance**: Offers instant responses to student queries related to courses, fees, schedules, and more.
-- **Centralized Information**: Serves as a single point of contact for all university-related information, eliminating platform navigation hassle.
-- **Personalized Recommendations**: Suggests resources, events, and opportunities tailored to individual users.
-- **Efficiency Boost**: Streamlines common student processes, improving productivity and satisfaction.
-- **Google Calendar Integration**: Simplifies event scheduling through direct Google Calendar access.
+- **⚡ Real-Time Assistance**: Instant responses to course schedules, fees, and other FAQs.  
+- **🔍 Centralized Information**: Say goodbye to platform-hopping for answers!  
+- **🎁 Personalized Recommendations**: Suggestions tailored to your academic and extracurricular interests.  
+- **📈 Productivity Boost**: Simplified student processes for a better university experience.  
+- **📅 Google Calendar Integration**: One-click event scheduling with your calendar.
 
 ---
 
 
-## High level architecture
+---
 
+## 🏗️ High-Level Architecture  
 
-### 1. **User Authentication**
-   - **Login Options**: User credentials or Google OAuth-based Single Sign-On (SSO).
+### 1. **User Authentication**  
+- Login options: **Credentials** or **Google OAuth-based SSO**.  
 
-### 2. **User Interface**
-   - **Chatbot Interface**: Intuitive query-response design for seamless interaction.
-   - **Features**:
-     - Uses Axios for HTTP POST requests to interact with FastAPI backend.
-     - Displays AI-generated replies in real time.
-     - Includes a dedicated button for event scheduling via Google Calendar.
+### 2. **User Interface**  
+- **Chatbot Design**: Clean and user-friendly interface.  
+  - 🛠️ **Features**:
+    - HTTP POST requests via Axios to interact with FastAPI backend.
+    - Real-time AI-generated responses.
+    - A dedicated **Google Calendar button** for event scheduling.  
 
-### 3. **FastAPI Backend**
-   - **High-Performance API Framework**:
-     - Facilitates communication between UI and server.
-     - Automatic validation, type inference, and API documentation.
+### 3. **FastAPI Backend**  
+- **High-Performance API Framework**:  
+  - Handles communication between the UI and server.  
+  - Features automatic validation, type inference, and built-in API docs.  
 
-### 4. **Server-Side RAG (Retrieval-Augmented Generation)**
-   - **AI Framework**:
-     - Combines large language models with retrieval systems for precise and relevant responses.
-     - Steps:
-       1. **Information Retrieval**: Queries external data (databases, knowledge bases, web).
-       2. **Pre-Processing**: Cleans and structures retrieved data.
-       3. **Integration**: Integrates processed data with language models.
+### 4. **Server-Side RAG (Retrieval-Augmented Generation)**  
+- Combines **language models** and **retrieval systems** to provide accurate responses.  
+  - 🔎 **Steps**:  
+    1. **Information Retrieval**: Searches databases and external resources.  
+    2. **Pre-Processing**: Cleans and structures retrieved data.  
+    3. **Integration**: Delivers precise responses using advanced AI models.  
 
-### 5. **Database**
-   - **MongoDB Cluster**:
-     - Stores cleaned and structured university-related information.
-     - Organized into collections for efficient querying and retrieval.
+### 5. **Database**  
+- Powered by **MongoDB Cluster** and **Pinecone** for fast, efficient information retrieval.  
 
-### 6. **CI/CD Pipeline**
-   - **Automation**:
-     - GitHub as the code repository.
-     - Jenkins integration for continuous integration and deployment.
-     - Deployment to AWS-hosted Ubuntu servers.
-
-
-## Technology Stack
-
-| **Component**           | **Technology**           |
-|--------------------------|--------------------------|
-| **Frontend**            | React, Axios            |
-| **Backend**             | FastAPI (Python)        |
-| **Database**            | MongoDB , Pinecone                |
-| **CI/CD**               | GitHub, Jenkins, AWS    |
-| **AI Framework**        | Retrieval-Augmented Generation (RAG) |
+### 6. **CI/CD Pipeline**  
+- **Automation Tools**:  
+  - **GitHub** for code repository.  
+  - **Jenkins** for integration and deployment.  
+  - Deployed on **AWS-hosted Ubuntu servers**.  
 
 ---
 
 
 
+## 💡 Technology Stack  
 
-## Demo
-
-Experience InsightBot in action and discover how it simplifies student life.
+| **Component**       | **Technology**           |  
+|----------------------|--------------------------|  
+| **Frontend**         | React, Axios             |  
+| **Backend**          | FastAPI (Python)         |  
+| **Database**         | MongoDB, Pinecone        |  
+| **CI/CD**            | GitHub, Jenkins, AWS     |  
+| **AI Framework**     | Retrieval-Augmented Generation (RAG) |  
 
 ---
 
-Thank you for exploring **InsightBot**!
+## 🎥 Demo  
 
+👀 **Coming Soon!** Experience InsightBot in action and see how it transforms student life.  
 
-## How to Run the Project
+---
 
-Follow these steps to set up and run the InsightBot project:
+## ⚙️ How to Run InsightBot  
 
-1. **Install Requirements**  
+Follow these steps to get started:  
+
+1. **📥 Install Requirements** 
    Install the necessary Python packages by running:  
    ```
    pip install -r requirements.txt 
