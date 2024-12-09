@@ -165,7 +165,11 @@ pytest
 
 ## 🎥 Demo  
 
-👀 **Coming Soon!** Experience InsightBot in action and see how it transforms student life.  
+👀 **Its Here..!** Experience InsightBot in action and see how it transforms student life.  
+
+Youtube Link: https://youtu.be/p9xlR4VNXdE 
+
+[![InsightBot](https://img.youtube.com/vi/p9xlR4VNXdE/0.jpg)](https://www.youtube.com/watch?v=p9xlR4VNXdE)
 
 ---
 
