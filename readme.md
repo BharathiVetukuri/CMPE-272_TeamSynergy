@@ -18,24 +18,60 @@
 ---
 ## 🎯 Objectives  
 
-### What InsightBot Brings to the Table:  
-- 🌟 **Instant Assistance**: Real-time responses to queries about academics, campus events, fees, and more.  
-- 📚 **Centralized Information**: A one-stop solution for all university-related inquiries, no more navigating multiple platforms.  
-- ⏱️ **Improved Efficiency**: Simplified processes for scheduling, payments, and exam-related queries.  
-- 🎯 **Personalized Support**: AI-powered recommendations for resources, events, and opportunities tailored just for you.  
-- 🎉 **Enhanced Experience**: Focus on learning and living while InsightBot takes care of the rest!  
+### ✅ **Required Features Implemented**
+InsightBot has successfully integrated all the mandatory features to ensure seamless functionality and enhanced student interaction:
+
+1. **Real-Time Query Resolution**:  
+   - AI-powered responses for queries regarding academics, campus events, administrative services, and more.  
+
+2. **Centralized Information Retrieval**:  
+   - One-stop solution to access university-related information from multiple resources without platform-hopping.  
+
+3. **Personalized Recommendations**:  
+   - Tailored suggestions based on user activity and preferences for academic resources, campus events, and opportunities.  
+
+4. **Google Calendar Integration**:  
+   - Direct scheduling of events or reminders through Google Calendar for streamlined organization.  
+
+5. **Secure Authentication**:  
+   - User login via credentials or **Google OAuth-based Single Sign-On (SSO)**.
+
+6. **Robust Backend API**:  
+   - Built on **FastAPI**, ensuring high performance, scalability, and efficient data handling.  
+
+7. **Advanced Database Setup**:  
+   - **MongoDB** and **Pinecone** enable rapid and accurate information retrieval.  
+
+8. **CI/CD Pipeline**:  
+   - Automated integration and deployment using **GitHub Actions**, **Jenkins**, and hosting on **AWS Ubuntu servers**.
 
 ---
 
-## ✨ Key Features  
+### 🌟 **Additional Features Highlighted**
+Beyond the core functionalities, InsightBot offers several advanced and innovative features:
 
-- **⚡ Real-Time Assistance**: Instant responses to course schedules, fees, and other FAQs.  
-- **🔍 Centralized Information**: Say goodbye to platform-hopping for answers!  
-- **🎁 Personalized Recommendations**: Suggestions tailored to your academic and extracurricular interests.  
-- **📈 Productivity Boost**: Simplified student processes for a better university experience.  
-- **📅 Google Calendar Integration**: One-click event scheduling with your calendar.
+1. **Retrieval-Augmented Generation (RAG)**:  
+   - Combines natural language models with powerful retrieval systems to provide precise, context-aware responses.  
+   - Includes advanced pre-processing of retrieved data for better accuracy.  
 
----
+2. **Optimized Chatbot UI**:  
+   - Intuitive and user-friendly interface built with **React**, featuring real-time AI responses and seamless event scheduling via an integrated **Google Calendar button**.
+
+3. **Custom Test Suite for Reliability**:  
+   - Comprehensive test cases developed for critical endpoints like root API, query handling, and vector store processing.  
+   - All tests passed successfully, ensuring stability and reliability.  
+
+4. **Interactive API Documentation**:  
+   - FastAPI's built-in API docs provide an easy-to-use interface for testing and interacting with the backend.
+
+5. **Efficient Information Storage**:  
+   - Leveraging **Pinecone's vector database** for efficient and rapid query processing.  
+
+6. **Scalable Deployment**:  
+   - Designed for scalability and high availability using AWS infrastructure and CI/CD pipelines.
+
+7. **Extensibility for Future Enhancements**:  
+   - Modular architecture allows easy integration of additional data sources or AI capabilities.  
 
 
 ---
