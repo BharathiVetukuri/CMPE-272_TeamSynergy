@@ -61,9 +61,16 @@
 - Combines **language models** and **retrieval systems** to provide accurate responses.  
   - 🔎 **Steps**:  
     1. **Information Retrieval**: Searches databases and external resources.  
-    2. **Pre-Processing**: Cleans and structures retrieved data.  
+    2. **Pre-Processing**: Cleans and structures retrieved data.
+     <br> 
+    <img src="DemoPictures/rag_1" alt="Alt Text" width="600" height="500">
+     <br>
+     
     3. **Integration**: Delivers precise responses using advanced AI models.  
+     <br>
+    <img src="DemoPictures/rag_phase2" alt="Alt Text" width="600" height="500">
 
+    
 ### 5. **Database**  
 - Powered by **MongoDB Cluster** and **Pinecone** for fast, efficient information retrieval.  
 
@@ -75,8 +82,39 @@
 
 ---
 
+## Test Cases & Results
+
+The InsightBot project includes comprehensive functional tests to ensure the reliability and correctness of its components. 
+
+ <img src="DemoPictures/testcases.png" alt="Alt Text" width="600" height="800">
+
+### Test Cases
+1. **Root Endpoint Test**  
+   - **Description**: Validates the root endpoint to ensure the API responds with the expected welcome message and HTTP 200 status.
+
+2. **Query Documents Test**  
+   - **Description**: Tests the `/query/` endpoint to validate response structure, HTTP status, and successful query processing.
+
+3. **Vector Store Test**  
+   - **Description**: Evaluates the `query_vector_store()` function by verifying query processing, result accuracy, and specific content, such as office hours information.
+
+### Test Results
+All test cases passed successfully, demonstrating the stability and reliability of the InsightBot API and its underlying services. 
+- Below is a screenshot of the test results:
+<br>
+<br>
+<img src="DemoPictures/testpassed.png" alt="Alt Text" width="900" height="700">
 
 
+### Running Tests
+To run the tests, use the following command:
+```bash
+pytest
+```
+
+
+
+---
 ## 💡 Technology Stack  
 
 | **Component**       | **Technology**           |  
